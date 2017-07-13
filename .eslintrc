@@ -10,6 +10,7 @@
     "node": true
   },
   "rules": {
+    "max-len": [1, 120],
     "arrow-parens": ["off"],
     "compat/compat": "error",
     "consistent-return": "off",

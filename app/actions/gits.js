@@ -1,0 +1,139 @@
+// @flow
+import type { Branch } from '../services/git';
+import type { PullRequest } from '../services/github';
+
+import { nameActions } from '../utils/actions';
+import * as git from '../services/git';
+import * as github from '../services/github';
+
+const Actions = {
+  ADD_PROJECT: '',
+  EDIT_PROJECT: '',
+  LOAD_BRANCHES: '',
+  STORE_BRANCHES: '',
+  CANNOT_LOAD_BRANCHES: '',
+  STORE_PULL_REQUESTS: '',
+  CANNOT_LOAD_REQUESTS: ''
+};
+nameActions(Actions, 'GIT');
+
+interface actionType {
+  type: string,
+  gitUrl: string
+}
+interface ProjectErrorActionType extends actionType {
+  error: Error
+}
+interface AddProjectActionType extends actionType {
+  project: string,
+  locations: string[]
+}
+interface EditProjectActionType extends actionType {
+  project: ?string,
+  locations: ?string[]
+}
+interface StoreBranchesActionType extends actionType {
+  branches: Branch[]
+}
+interface StoreRequestsActionsType extends actionType {
+  requests: PullRequest[]
+}
+type ActionTypes = AddProjectActionType
+  | EditProjectActionType
+  | StoreBranchesActionType
+  | StoreRequestsActionsType
+  | ProjectErrorActionType;
+
+function loadBranches(
+  gitUrl: string,
+  locations: string[],
+  dispatch: (action: StoreBranchesActionType | ProjectErrorActionType) => void): void {
+  Promise.all(locations.map(location => git.getBranches(location, gitUrl)))
+    .then(allBranches => allBranches
+      .reduce(
+        (acc, branches) => acc.concat(branches),
+        [])
+      .reduce(
+        (acc, branche) => {
+          if (!acc.has(branche.name)) {
+            acc.set(branche.name, branche);
+          }
+
+          return acc;
+        }, new Map()))
+    .then(branches => dispatch({
+      type: Actions.STORE_BRANCHES,
+      gitUrl,
+      branches: Array.of(branches.values())
+    }))
+    .catch((err: Error) => {
+      dispatch({
+        type: Actions.CANNOT_LOAD_BRANCHES,
+        gitUrl,
+        error: err
+      });
+    });
+}
+
+function loadPullRequests(
+  gitUrl: string,
+  dispatch: (action: StoreRequestsActionsType | ProjectErrorActionType) => void): void {
+  github.getPullRequests()
+    .then(requests => dispatch({
+      type: Actions.STORE_PULL_REQUESTS,
+      gitUrl,
+      requests
+    }))
+    .catch((err: Error) => dispatch({
+      type: Actions.CANNOT_LOAD_REQUESTS,
+      gitUrl,
+      error: err
+    }));
+}
+
+function addProject(gitUrl: string, projectName: string, locations: string[]) {
+  return (dispatch: (action: AddProjectActionType | StoreBranchesActionType | StoreRequestsActionsType | ProjectErrorActionType) => void) => {
+    const projectAction: AddProjectActionType = {
+      type: Actions.ADD_PROJECT,
+      project: projectName,
+      gitUrl,
+      locations
+    };
+    dispatch(projectAction);
+
+    loadBranches(projectName, locations, dispatch);
+    loadPullRequests(gitUrl, dispatch);
+  };
+}
+
+function editProject(gitUrl: string, projectName: string, locations: string[]) {
+  return (dispatch: (action: EditProjectActionType | StoreBranchesActionType | StoreRequestsActionsType | ProjectErrorActionType) => void) => {
+    dispatch({
+      type: Actions.EDIT_PROJECT,
+      project: projectName,
+      gitUrl,
+      locations
+    });
+
+    loadBranches(projectName, locations, dispatch);
+    loadPullRequests(gitUrl, dispatch);
+  };
+}
+
+export default {
+  Actions,
+  Actors: {
+    addProject,
+    editProject
+  }
+};
+
+export type {
+ actionType,
+ AddProjectActionType,
+ EditProjectActionType,
+ StoreBranchesActionType,
+ StoreRequestsActionsType,
+ ProjectErrorActionType,
+ ActionTypes
+};
