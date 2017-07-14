@@ -17,27 +17,33 @@ const Actions = {
 };
 nameActions(Actions, 'GIT');
 
-interface actionType {
+type ProjectErrorActionType = {
   type: string,
-  gitUrl: string
-}
-interface ProjectErrorActionType extends actionType {
+  gitUrl: string,
   error: Error
-}
-interface AddProjectActionType extends actionType {
+};
+type AddProjectActionType = {
+  type: string,
+  gitUrl: string,
   project: string,
   locations: string[]
-}
-interface EditProjectActionType extends actionType {
-  project: ?string,
-  locations: ?string[]
-}
-interface StoreBranchesActionType extends actionType {
+};
+type EditProjectActionType = {
+  type: string,
+  gitUrl: string,
+  project?: string,
+  locations?: string[]
+};
+type StoreBranchesActionType = {
+  type: string,
+  gitUrl: string,
   branches: Branch[]
-}
-interface StoreRequestsActionsType extends actionType {
+};
+type StoreRequestsActionsType = {
+  type: string,
+  gitUrl: string,
   requests: PullRequest[]
-}
+};
 type ActionTypes = AddProjectActionType
   | EditProjectActionType
   | StoreBranchesActionType
@@ -64,7 +70,7 @@ function loadBranches(
     .then(branches => dispatch({
       type: Actions.STORE_BRANCHES,
       gitUrl,
-      branches: Array.of(branches.values())
+      branches: Array.from(branches.values())
     }))
     .catch((err: Error) => {
       dispatch({
@@ -101,7 +107,7 @@ function addProject(gitUrl: string, projectName: string, locations: string[]) {
     };
     dispatch(projectAction);
 
-    loadBranches(projectName, locations, dispatch);
+    loadBranches(gitUrl, locations, dispatch);
     loadPullRequests(gitUrl, dispatch);
   };
 }
@@ -115,7 +121,7 @@ function editProject(gitUrl: string, projectName: string, locations: string[]) {
       locations
     });
 
-    loadBranches(projectName, locations, dispatch);
+    loadBranches(gitUrl, locations, dispatch);
     loadPullRequests(gitUrl, dispatch);
   };
 }
@@ -129,7 +135,6 @@ export default {
 };
 
 export type {
- actionType,
  AddProjectActionType,
  EditProjectActionType,
  StoreBranchesActionType,

@@ -10,6 +10,8 @@ export default class Home extends Component {
         <div className={styles.container} data-tid="container">
           <h2>Home</h2>
           <Link to="/counter">to Counter</Link>
+          <br />
+          <Link to="/repositories">to GitHubist</Link>
         </div>
       </div>
     );

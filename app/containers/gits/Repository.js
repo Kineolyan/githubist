@@ -1,0 +1,24 @@
+// @flow
+import { connect } from 'react-redux';
+import _ from 'lodash';
+
+import type { GitProjectType } from '../../reducers/gits';
+import type { StateType } from '../../reducers';
+
+import Repository from '../../components/gits/Repository';
+
+function mapStateToProps(state: StateType, props: any): any {
+  const projectName: string = props.match.params.projectName;
+  return {
+    repository: _(state.repositories)
+      .values()
+      .filter((repository: GitProjectType) => repository.name === projectName)
+      .first()
+  };
+}
+
+function mapDispatchToProps() {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Repository);

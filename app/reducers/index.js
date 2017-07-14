@@ -2,7 +2,7 @@
 import { combineReducers } from 'redux';
 import { routerReducer as router } from 'react-router-redux';
 import counter from './counter';
-import gits from './gits'
+import gits from './gits';
 import type { CounterStateType } from './counter';
 import type { GitStateType } from './gits';
 
@@ -14,6 +14,7 @@ export type StateType = {
 const rootReducer = combineReducers({
   counter,
   router,
+  repositories: gits
 });
 
 export default rootReducer;
