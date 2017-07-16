@@ -9,6 +9,7 @@ import * as github from '../services/github';
 const Actions = {
   ADD_PROJECT: '',
   EDIT_PROJECT: '',
+  DELETE_PROJECT: '',
   LOAD_BRANCHES: '',
   STORE_BRANCHES: '',
   CANNOT_LOAD_BRANCHES: '',
@@ -34,6 +35,10 @@ type EditProjectActionType = {
   project?: string,
   locations?: string[]
 };
+type DeleteProjectActionType = {
+  type: string,
+  gitUrl: string
+};
 type StoreBranchesActionType = {
   type: string,
   gitUrl: string,
@@ -46,6 +51,7 @@ type StoreRequestsActionsType = {
 };
 type ActionTypes = AddProjectActionType
   | EditProjectActionType
+  | DeleteProjectActionType
   | StoreBranchesActionType
   | StoreRequestsActionsType
   | ProjectErrorActionType;
@@ -126,11 +132,19 @@ function editProject(gitUrl: string, projectName: string, locations: string[]) {
   };
 }
 
+function deleteProject(gitUrl: string) {
+  return {
+    type: Actions.DELETE_PROJECT,
+    gitUrl
+  };
+}
+
 export default {
   Actions,
   Actors: {
     addProject,
-    editProject
+    editProject,
+    deleteProject
   }
 };
 

@@ -3,6 +3,7 @@ import type {
   ActionTypes,
   AddProjectActionType,
   EditProjectActionType,
+  DeleteProjectActionType,
   StoreBranchesActionType,
   StoreRequestsActionsType,
   ProjectErrorActionType
@@ -61,6 +62,17 @@ function editProject(state: GitStateType, action: EditProjectActionType): GitSta
   };
 }
 
+function deleteProject(state: GitStateType, action: DeleteProjectActionType): GitStateType {
+  const projectKey = action.gitUrl;
+  if (!Reflect.has(state, projectKey)) {
+    throw new Error(`Project ${projectKey} does not exist. Use on of [${Object.keys(state).join(', ')}]`);
+  }
+
+  const projects = { ...state };
+  Reflect.deleteProperty(projects, projectKey);
+  return projects;
+}
+
 function storeBranches(state: GitStateType, action: StoreBranchesActionType): GitStateType {
   const project: GitProjectType = {
     ...state[action.gitUrl],
@@ -111,6 +123,8 @@ export default function reducer(state: GitStateType = {}, action: ActionTypes | 
       return addProject(state, action);
     case Actions.EDIT_PROJECT:
       return editProject(state, action);
+    case Actions.DELETE_PROJECT:
+      return deleteProject(state, action);
     case Actions.STORE_BRANCHES:
       return storeBranches(state, action);
     case Actions.STORE_PULL_REQUESTS:

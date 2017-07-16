@@ -12,7 +12,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { addProject: gits.Actors.addProject },
+    {
+      addProject: gits.Actors.addProject,
+      deleteProject: gits.Actors.deleteProject
+    },
     dispatch);
 }
 

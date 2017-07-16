@@ -10,7 +10,8 @@ import Repository from '../../containers/gits/Repository';
 // import styles from './Counter.css';
 type RepositoryProps = {
   repositories: GitStateType,
-  addProject: (gitUrl: string, project: string, locations: string[]) => void
+  addProject: (gitUrl: string, project: string, locations: string[]) => void,
+  deleteProject: (gitUrl: string) => void
 };
 
 class Repositories extends Component {
@@ -54,6 +55,7 @@ class Repositories extends Component {
       .map(repository => (
         <li key={repository.gitUrl}>
           <Link to={`/repositories/${repository.name}`}>{repository.name}</Link>
+          <span onClick={() => this.props.deleteProject(repository.gitUrl)}> [x]</span>
         </li>
       ));
     return <ul>{repos}</ul>;

@@ -5,20 +5,38 @@ import { Link } from 'react-router-dom';
 import type { GitProjectType } from '../../reducers/gits';
 
 // import styles from './Counter.css';
+type RepositoryProps = {
+  repository?: GitProjectType,
+  deleteProject: (girUrl: string) => void
+};
 
 class Repository extends Component {
-  props: {
-    repository?: GitProjectType
-  };
+  props: RepositoryProps;
 
   static defaultProps = {
     repository: undefined
   }
 
+  constructor(props: RepositoryProps) {
+    super(props);
+
+    this.cbks = {
+      deleteProject: this.hasProject()
+        ? () => this.props.deleteProject(this.props.repository.gitUrl)
+        : () => {}
+    };
+  }
+
+  hasProject() {
+    return this.props.repository !== undefined;
+  }
+
   renderProject() {
     return (
       <div>
-        <h4>Project {this.props.repository.name}</h4>
+        <h4>
+          Project {this.props.repository.name} <span onClick={this.cbks.deleteProject}>[x]</span>
+        </h4>
         <div>Locations: {this.props.repository.locations.join(', ')}</div>
         <div>Branches
           <ul>
@@ -34,7 +52,7 @@ class Repository extends Component {
   render() {
     return (
       <div>
-        {this.props.repository !== undefined ? this.renderProject() : (<p>No project here</p>)}
+        {this.hasProject() ? this.renderProject() : (<p>No project here</p>)}
         <div>
           <Link to="/repositories">Back to project</Link>
         </div>
