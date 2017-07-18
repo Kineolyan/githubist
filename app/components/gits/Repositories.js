@@ -27,9 +27,9 @@ class Repositories extends Component {
     super(props);
 
     this.state = {
-      projectName: 'test',
-      gitUrl: 'git-url',
-      location: 'some/where'
+      projectName: 'Jarvis',
+      gitUrl: 'git@github.com:Kineolyan/Jarvis.git',
+      location: '/Users/oliv/projects/jarvis'
     };
 
     this.cbks = {
