@@ -120,19 +120,19 @@ function invalidateRequests(state: GitStateType, action: ProjectErrorActionType)
 export default function reducer(state: GitStateType = {}, action: ActionTypes | {type: string}) {
   switch (action.type) {
     case Actions.ADD_PROJECT:
-      return addProject(state, action);
+      return addProject(state, ((action: any): AddProjectActionType));
     case Actions.EDIT_PROJECT:
-      return editProject(state, action);
+      return editProject(state, ((action: any): EditProjectActionType));
     case Actions.DELETE_PROJECT:
-      return deleteProject(state, action);
+      return deleteProject(state, ((action: any): DeleteProjectActionType));
     case Actions.STORE_BRANCHES:
-      return storeBranches(state, action);
+      return storeBranches(state, ((action: any): StoreBranchesActionType));
     case Actions.STORE_PULL_REQUESTS:
-      return storeRequests(state, action);
+      return storeRequests(state, ((action: any): StoreRequestsActionsType));
     case Actions.CANNOT_LOAD_BRANCHES:
-      return invalidateBranches(state, action);
+      return invalidateBranches(state, ((action: any): ProjectErrorActionType));
     case Actions.CANNOT_LOAD_REQUESTS:
-      return invalidateRequests(state, action);
+      return invalidateRequests(state, ((action: any): ProjectErrorActionType));
     default:
       return state;
   }
