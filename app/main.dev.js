@@ -12,8 +12,11 @@
  */
 import { app, BrowserWindow } from 'electron';
 import MenuBuilder from './menu';
+import getSettings from './storage/settings';
 
 let mainWindow = null;
+const settings = getSettings(false);
+settings.initialize();
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
