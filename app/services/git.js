@@ -10,7 +10,7 @@ interface Branch {
 /**
  * Safely spawn a process, checking its cwd
  */
-function spawnProcess(cmd, args, opts): Promise<ChildProcess> {
+function spawnProcess(cmd: string, args: string[], opts: {cwd?: string}): Promise<ChildProcess> {
   return new Promise((resolve, reject) => {
     const cwd = opts.cwd || process.cwd();
     // Check that the cwd exist, otherwise spawn fails
@@ -27,7 +27,7 @@ function spawnProcess(cmd, args, opts): Promise<ChildProcess> {
 
 const REMOTE_EXPR = /^\s*(\w+)\s(.+)\s\(push\)\s*$/;
 function getRemote(location: string, gitUrl: string): Promise<string | undefined> {
-  return spawnProcess('git', ['remote', '--verbose'], { cmd: location })
+  return spawnProcess('git', ['remote', '--verbose'], { cwd: location })
     .then(p => new Promise((resolve, reject) => {
       let resolved: boolean = false;
       p.stdout.on('data', data => {
@@ -65,9 +65,9 @@ function getRemote(location: string, gitUrl: string): Promise<string | undefined
 
 // * master ce07a68 [origin/master] Add real code to get branches.
 //  test   ce07a68 Add real code to get branches.
-const BRANCH_EXPR = /^\s*[*\s]\s(.+)\s[0-9a-f]+\s(?:(?:\[(.+)\])?)\s.+$/;
+const BRANCH_EXPR = /^\s*[*\s]\s(.+)\s[0-9a-f]+\s(?:(?:\[(.+?)(?:: .+)?\])?)\s.+$/;
 function listBranches(location: string, remote?: string): Promise<Branch[]> {
-  return spawnProcess('git', ['branch', '-vv'], { cmd: location })
+  return spawnProcess('git', ['branch', '-vv'], { cwd: location })
     .then(process => new Promise((resolve, reject) => {
       const branches: Branch[] = [];
       const remotePattern = remote !== undefined ? new RegExp(`^remotes/${remote}/`) : /remotes\//;
@@ -79,12 +79,12 @@ function listBranches(location: string, remote?: string): Promise<Branch[]> {
             const remoteName = matches[2];
             if (name !== undefined && remoteName !== undefined) {
               branches.push({
-                name: remoteName,
-                localName: name
+                name: remoteName.trim(),
+                localName: name.trim()
               });
             } else if (remotePattern.test(name)) {
               branches.push({
-                name: name.substring(8) // 'remotes/'.length
+                name: name.substring(8).trim() // 'remotes/'.length
               });
             }
           }
