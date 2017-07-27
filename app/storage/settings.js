@@ -1,5 +1,15 @@
 // @flow
 
+interface Project {
+  gitUrl: string,
+  name: string,
+  locations: string[]
+}
+
+function sanitizeKey(value: string): string {
+  return value.replace(/\./g, '_');
+}
+
 class Settings {
   store: any;
 
@@ -16,16 +26,26 @@ class Settings {
     console.log('Settings saved into', this.store.file());
   }
 
-  getProjects() {
-    return this.store.get('projects');
+  getProjects(): Project[] {
+    const projects: any = Object.values(this.store.get('projects'));
+    return (projects: Project[]);
   }
 
-  addProject(project: any) {
-    this.store.set(`projects.${project.gitUrl}`, project);
+  saveProject(project: Project): void {
+    // Keep only wanted attributes of the given project
+    const p: Project = {
+      gitUrl: project.gitUrl,
+      name: project.name,
+      locations: project.locations.slice()
+    };
+
+    const projectKey = sanitizeKey(p.gitUrl);
+    this.store.set(`projects.${projectKey}`, p);
   }
 
-  removeProject(gitUrl: string) {
-    this.store.delete(`projects.${gitUrl}`);
+  removeProject(gitUrl: string): void {
+    const projectKey = sanitizeKey(gitUrl);
+    this.store.delete(`projects.${projectKey}`);
   }
 }
 

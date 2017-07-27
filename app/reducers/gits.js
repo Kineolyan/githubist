@@ -12,6 +12,9 @@ import type { Branch } from '../services/git';
 import type { PullRequest } from '../services/github';
 
 import gits from '../actions/gits';
+import getSettings from '../storage/settings';
+
+const settings = getSettings();
 
 const { Actions } = gits;
 
@@ -38,6 +41,9 @@ function addProject(state: GitStateType, action: AddProjectActionType): GitState
     branches: [],
     requests: []
   };
+
+  settings.saveProject(newProject);
+
   return {
     ...state,
     [action.gitUrl]: newProject
@@ -56,6 +62,9 @@ function editProject(state: GitStateType, action: EditProjectActionType): GitSta
     locations: action.locations || project.locations,
     name: action.project || project.name
   };
+
+  settings.saveProject(udpatedProject);
+
   return {
     ...state,
     [projectKey]: udpatedProject
@@ -70,6 +79,8 @@ function deleteProject(state: GitStateType, action: DeleteProjectActionType): Gi
 
   const projects = { ...state };
   Reflect.deleteProperty(projects, projectKey);
+  settings.removeProject(projectKey);
+
   return projects;
 }
 

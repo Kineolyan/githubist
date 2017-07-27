@@ -151,6 +151,7 @@ export default {
 export type {
  AddProjectActionType,
  EditProjectActionType,
+ DeleteProjectActionType,
  StoreBranchesActionType,
  StoreRequestsActionsType,
  ProjectErrorActionType,
