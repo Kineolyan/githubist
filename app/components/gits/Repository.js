@@ -54,7 +54,7 @@ class Repository extends Component {
       <div>
         {this.hasProject() ? this.renderProject() : (<p>No project here</p>)}
         <div>
-          <Link to="/repositories">Back to project</Link>
+          <Link to="/gits/repositories">Back to project</Link>
         </div>
       </div>
     );

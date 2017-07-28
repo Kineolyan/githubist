@@ -9,8 +9,10 @@ export default class App extends Component {
 
   render() {
     return (
-      <div>
-        {this.props.children}
+      <div className="window">
+        <div className="window-content">
+          {this.props.children}
+        </div>
       </div>
     );
   }

@@ -1,20 +1,13 @@
 // @flow
 import React, { Component } from 'react';
-import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
-
-import type { GitStateType } from '../../reducers/gits';
-
-import Repository from '../../containers/gits/Repository';
 
 // import styles from './Counter.css';
 type RepositoryProps = {
-  repositories: GitStateType,
-  addProject: (gitUrl: string, project: string, locations: string[]) => void,
-  deleteProject: (gitUrl: string) => void
+  addProject: (gitUrl: string, project: string, locations: string[]) => void
 };
 
-class Repositories extends Component {
+class AddRepository extends Component {
   props: RepositoryProps;
 
   state: {
@@ -47,22 +40,6 @@ class Repositories extends Component {
       gitUrl: '',
       location: ''
     });
-  }
-
-  renderList() {
-    const repos = Object.keys(this.props.repositories)
-      .map(url => this.props.repositories[url])
-      .map(repository => (
-        <li key={repository.gitUrl}>
-          <Link to={`/gits/repositories/${repository.name}`}>{repository.name}</Link>
-          <span onClick={() => this.props.deleteProject(repository.gitUrl)}> [x]</span>
-        </li>
-      ));
-    return <ul>{repos}</ul>;
-  }
-
-  renderRepository() {
-    return <Route path="/repositories/:projectName" component={Repository} />;
   }
 
   renderForm() {
@@ -98,11 +75,6 @@ class Repositories extends Component {
   render() {
     return (
       <div>
-        <div>
-          {Object.keys(this.props.repositories).length} repositories
-        </div>
-        {this.renderList()}
-        <hr />
         {this.renderForm()}
         <div>
           <Link to="/">Back</Link>
@@ -112,4 +84,4 @@ class Repositories extends Component {
   }
 }
 
-export default Repositories;
+export default AddRepository;

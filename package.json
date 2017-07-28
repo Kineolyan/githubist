@@ -189,6 +189,7 @@
     "electron-settings": "^3.1.1",
     "font-awesome": "^4.7.0",
     "history": "^4.6.1",
+    "photonkit": "^0.1.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-hot-loader": "3.0.0-beta.6",

@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Repositories from '../../components/gits/Repositories';
+import AddRepository from '../../components/gits/AddRepository';
 import gits from '../../actions/gits';
 
 function mapStateToProps(state) {
@@ -13,10 +13,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      addProject: gits.Actors.addProject,
-      deleteProject: gits.Actors.deleteProject
+      addProject: gits.Actors.addProject
     },
     dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Repositories);
+export default connect(mapStateToProps, mapDispatchToProps)(AddRepository);
