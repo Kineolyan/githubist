@@ -20,9 +20,9 @@ class AddRepository extends Component {
     super(props);
 
     this.state = {
-      projectName: 'Jarvis',
-      gitUrl: 'git@github.com:Kineolyan/Jarvis.git',
-      location: '/Users/oliv/projects/jarvis'
+      projectName: '',
+      gitUrl: '',
+      location: ''
     };
 
     this.cbks = {
@@ -46,35 +46,49 @@ class AddRepository extends Component {
     return (
       <div>
         Add new project:<br />
-        <input
-          type="text"
-          value={this.state.projectName}
-          onChange={this.cbks.setProject}
-          placeholder="Project name"
-        />
-        <br />
-        <input
-          type="text"
-          value={this.state.gitUrl}
-          onChange={this.cbks.setGitUrl}
-          placeholder="GitHub URL"
-        />
-        <br />
-        <input
-          type="text"
-          value={this.state.location}
-          onChange={this.cbks.setLocation}
-          placeholder="Location"
-        />
-        <br />
-        <button onClick={this.cbks.createProject}>Create</button>
+        <form>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control"
+              value={this.state.projectName}
+              onChange={this.cbks.setProject}
+              placeholder="Project name"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+                className="form-control"
+              value={this.state.gitUrl}
+              onChange={this.cbks.setGitUrl}
+              placeholder="GitHub URL"
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control"
+              value={this.state.location}
+              onChange={this.cbks.setLocation}
+              placeholder="Location"
+            />
+          </div>
+          <div className="form-actions">
+            <button
+              className="btn btn-primary"
+              onClick={this.cbks.createProject}>
+                Create
+            </button>
+          </div>
+        </form>
       </div>
     );
   }
 
   render() {
     return (
-      <div>
+      <div style={{ padding: '15px 10px' }}>
         {this.renderForm()}
         <div>
           <Link to="/">Back</Link>

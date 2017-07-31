@@ -8,6 +8,7 @@ import Repositories from './containers/gits/Repositories';
 import Repository from './containers/gits/Repository';
 import AddRepository from './containers/gits/AddRepository';
 import Menu from './containers/Menu';
+import Settings from './containers/Settings';
 
 export default () => (
   <App>
@@ -18,6 +19,7 @@ export default () => (
       <div className="pane">
         <Switch>
           <Route path="/counter" component={CounterPage} />
+          <Route path="/settings" component={Settings} />
           <Route path="/gits/create" component={AddRepository} />
           <Route path="/gits/repositories/:projectName" component={Repository} />
           <Route path="/gits/repositories" component={Repositories} />
