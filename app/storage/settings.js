@@ -47,6 +47,17 @@ class Settings {
     const projectKey = sanitizeKey(gitUrl);
     this.store.delete(`projects.${projectKey}`);
   }
+
+  getCredentials(): {username: string, token: string} | null {
+    const credentials = this.store.get('settings.credentials');
+    return credentials !== undefined && credentials.username !== undefined && credentials.token !== undefined
+      ? credentials
+      : null;
+  }
+
+  saveCredentials(username: string, token: string) {
+    this.store.set('settings.credentials', { username, token });
+  }
 }
 
 function getSettings(fromRender: boolean = true): Settings {

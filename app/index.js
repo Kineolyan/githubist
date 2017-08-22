@@ -8,6 +8,7 @@ import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 import getSettings from './storage/settings';
 import gits from './actions/gits';
+import setts from './actions/settings';
 
 const settings = getSettings();
 
@@ -25,6 +26,11 @@ const dispatch = store.dispatch.bind(store);
 settings.getProjects()
   .map(project => gits.Actors.addProject(project.gitUrl, project.name, project.locations))
   .map(thunk => thunk(dispatch));
+
+const savedCredentials = settings.getCredentials();
+if (savedCredentials !== null) {
+  setts.Actors.setToken(savedCredentials.username, savedCredentials.token)(dispatch);
+}
 
 render(
   <AppContainer>
