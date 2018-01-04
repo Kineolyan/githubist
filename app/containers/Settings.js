@@ -1,13 +1,13 @@
 // @flow
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { goBack } from 'react-router-redux';
 
 import Settings from '../components/Settings';
 import settings from '../actions/settings';
 
-function mapStateToProps(state: any, props: any): any {
+function mapStateToProps(state: any): any {
   return {
-    goBack: props.history.goBack,
     settings: state.settings
   };
 }
@@ -15,6 +15,7 @@ function mapStateToProps(state: any, props: any): any {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
+      goBack,
       updateCredentials: settings.Actors.setToken,
       saveCredentials: settings.Actors.saveToken
     },

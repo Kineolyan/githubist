@@ -23,14 +23,15 @@ const dispatch = store.dispatch.bind(store);
 //     '/home/olivier/projects/qfs/views/ap5.4/workspace/unity'
 //   ]
 // )(dispatch);
-settings.getProjects()
-  .map(project => gits.Actors.addProject(project.gitUrl, project.name, project.locations))
-  .map(thunk => thunk(dispatch));
 
 const savedCredentials = settings.getCredentials();
 if (savedCredentials !== null) {
   setts.Actors.setToken(savedCredentials.username, savedCredentials.token)(dispatch);
 }
+
+settings.getProjects()
+  .map(project => gits.Actors.addProject(project.gitUrl, project.name, project.locations, savedCredentials))
+  .map(thunk => thunk(dispatch));
 
 render(
   <AppContainer>

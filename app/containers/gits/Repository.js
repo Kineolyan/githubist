@@ -15,13 +15,17 @@ function mapStateToProps(state: StateType, props: any): any {
     repository: _(state.repositories)
       .values()
       .filter((repository: GitProjectType) => repository.name === projectName)
-      .first()
+      .first(),
+    config: state.settings
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { deleteProject: gits.Actors.deleteProject },
+    {
+      deleteProject: gits.Actors.deleteProject,
+      refreshProject: gits.Actors.refreshProject
+    },
     dispatch
   );
 }

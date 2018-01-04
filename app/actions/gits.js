@@ -87,23 +87,42 @@ function loadBranches(
     });
 }
 
+const parseGitHubUrl = (() => {
+  const GITHUB_FORMAT = /.*:([\w\-_]+)\/([\w\-_]+)(?:.git)*/;
+  return (url) => {
+    const match = GITHUB_FORMAT.exec(url);
+    if (match !== null) {
+      return {repository: match[1], project: match[2]};
+    } else {
+      return null;
+    }
+  };
+})();
+
 function loadPullRequests(
+  credentials: any,
   gitUrl: string,
   dispatch: (action: StoreRequestsActionsType | ProjectErrorActionType) => void): void {
-  github.getPullRequests()
-    .then(requests => dispatch({
-      type: Actions.STORE_PULL_REQUESTS,
-      gitUrl,
-      requests
-    }))
-    .catch((err: Error) => dispatch({
-      type: Actions.CANNOT_LOAD_REQUESTS,
-      gitUrl,
-      error: err
-    }));
+  const projectDetails = parseGitHubUrl(gitUrl);
+  if (projectDetails !== null) {
+    const {repository, project} = projectDetails;
+    github.getPullRequests(credentials.token, repository, project)
+      .then(requests => dispatch({
+        type: Actions.STORE_PULL_REQUESTS,
+        gitUrl,
+        requests
+      }))
+      .catch((err: Error) => dispatch({
+        type: Actions.CANNOT_LOAD_REQUESTS,
+        gitUrl,
+        error: err
+      }));
+  } else {
+    console.error('Cannot load PRs for', gitUrl);
+  }
 }
 
-function addProject(gitUrl: string, projectName: string, locations: string[]) {
+function addProject(gitUrl: string, projectName: string, locations: string[], credentials: any) {
   return (dispatch: (action: AddProjectActionType | StoreBranchesActionType | StoreRequestsActionsType | ProjectErrorActionType) => void) => {
     const projectAction: AddProjectActionType = {
       type: Actions.ADD_PROJECT,
@@ -114,11 +133,11 @@ function addProject(gitUrl: string, projectName: string, locations: string[]) {
     dispatch(projectAction);
 
     loadBranches(gitUrl, locations, dispatch);
-    loadPullRequests(gitUrl, dispatch);
+    loadPullRequests(credentials, gitUrl, dispatch);
   };
 }
 
-function editProject(gitUrl: string, projectName: string, locations: string[]) {
+function editProject(gitUrl: string, projectName: string, locations: string[], credentials: any) {
   return (dispatch: (action: EditProjectActionType | StoreBranchesActionType | StoreRequestsActionsType | ProjectErrorActionType) => void) => {
     dispatch({
       type: Actions.EDIT_PROJECT,
@@ -128,7 +147,16 @@ function editProject(gitUrl: string, projectName: string, locations: string[]) {
     });
 
     loadBranches(gitUrl, locations, dispatch);
-    loadPullRequests(gitUrl, dispatch);
+    loadPullRequests(credentials, gitUrl, dispatch);
+  };
+}
+
+
+
+function refreshProject(project: any, credentials: any) {
+  return (dispatch: (action: EditProjectActionType | StoreBranchesActionType | StoreRequestsActionsType | ProjectErrorActionType) => void) => {
+    loadBranches(project.gitUrl, project.locations, dispatch);
+    loadPullRequests(credentials, project.gitUrl, dispatch);
   };
 }
 
@@ -144,7 +172,8 @@ export default {
   Actors: {
     addProject,
     editProject,
-    deleteProject
+    deleteProject,
+    refreshProject
   }
 };
 

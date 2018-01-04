@@ -33,16 +33,17 @@ type ActionTypes = SetGithubToken
   | SaveGithubToken;
 
 function checkToken(username: string, token: string, dispatch: (any) => void): void {
-  // TODO try to make a call with the token to list repositories
-  // In success, mark it as valid
-  // For now, always valid
-  setTimeout(() => {
+  const sendAction = status => {
     const action: SetTokenStatus = {
       type: Actions.VALIDATE_GITHUB_TOKEN,
-      status: true
+      status
     };
     dispatch(action);
-  }, 1000);
+  };
+
+  github.checkToken(token)
+    .then(sendAction)
+    .catch(() => sendAction(false));
 }
 
 function setToken(username: string, token: string) {
