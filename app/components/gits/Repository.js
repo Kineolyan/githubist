@@ -51,7 +51,7 @@ class Repository extends Component {
     if (pr.closed) {
       return (
         <span
-          style={{lineDecoration: 'line-through', color: '#de8900'}}>
+          style={{fontStyle: 'italic', color: '#de8900'}}>
           Closed
         </span>
       );
